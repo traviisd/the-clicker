@@ -1,4 +1,4 @@
-module changeme
+module github.com/traviisd/the-clicker
 
 go 1.17
 
