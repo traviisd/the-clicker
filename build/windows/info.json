@@ -1,0 +1,15 @@
+{
+	"fixed": {
+		"file_version": "1.0.0"
+	},
+	"info": {
+		"0000": {
+			"ProductVersion": "1.0.0",
+			"CompanyName": "the-clicker",
+			"FileDescription": "the-clicker",
+			"LegalCopyright": "Copyright.........",
+			"ProductName": "the-clicker",
+			"Comments": "Built using Wails (https://wails.app)"
+		}
+	}
+}

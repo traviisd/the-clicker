@@ -1,0 +1,60 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches:
+      - 'main'
+      - 'master'
+    paths-ignore:
+      - "**.md"
+
+env:
+  BASE_VERSION: "1.0"
+  
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [ g++-10 ]
+        include:
+          - os: ubuntu-latest
+            compiler: g++-10
+            target: Linux
+
+          - os: macos-latest
+            compiler: g++-10
+            target: Macos
+
+          - os: windows-latest
+            compiler: cl
+            target: Windows
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ‘1.17.5’
+        
+      - name: Generate build files
+        run: |
+          export GO11MODULE=on
+          go get -u github.com/wailsapp/wails/cmd/wails
+          CGO_ENABLED=1 wails build -tags musl -ldflags "-s -w"
+          
+
+
+
+
+
