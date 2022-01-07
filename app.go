@@ -11,18 +11,10 @@ import (
 	hook "github.com/robotn/gohook"
 )
 
-const (
-	leftCtrlCode  = 59
-	leftShiftCode = 56
-	sKey          = 1
-	qKey          = 12
-)
-
 var (
-	click    *bool
-	shutdown = false
-	clicks   = 0
-	delay    *int
+	click  bool
+	clicks = 0
+	delay  = 500
 )
 
 // App struct
@@ -32,11 +24,6 @@ type App struct {
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	// default delay
-	d := 500
-	c := false
-	delay = &d
-	click = &c
 	return &App{}
 }
 
@@ -52,92 +39,20 @@ func (b *App) domReady(ctx context.Context) {
 
 // shutdown is called at application termination
 func (b *App) shutdown(ctx context.Context) {
-	c := false
-	click = &c
-	shutdown = true
-	delay = nil
-	clicks = 0
+	hook.End()
 }
 
 func (b *App) hooks() {
-	evChan := hook.Start()
-	defer hook.End()
-
-	var ctrlHold, ctrlUp, shiftHold, shiftUp, startHold, startUp, stopHold, stopUp bool
-
-	for ev := range evChan {
-		switch ev.Kind {
-		case hook.KeyHold:
-			// ctrl/control
-			if ev.Rawcode == leftCtrlCode {
-				ctrlHold = true
-				ctrlUp = false
-			}
-			// shift key
-			if ev.Rawcode == leftShiftCode {
-				shiftHold = true
-				shiftUp = false
-			}
-
-			if ev.Rawcode == sKey {
-				startHold = true
-				startUp = false
-			}
-
-			if ev.Rawcode == qKey {
-				stopHold = true
-				stopUp = false
-			}
-
-		case hook.KeyUp:
-			// ctrl/control
-			if ev.Rawcode == leftCtrlCode {
-				ctrlUp = true
-			}
-
-			// shift key
-			if ev.Rawcode == leftShiftCode {
-				shiftUp = true
-			}
-
-			if ev.Rawcode == sKey {
-				startUp = true
-			}
-
-			if ev.Rawcode == qKey {
-				stopUp = true
-			}
-		}
-
-		ctrlEnabled := (ctrlHold && !ctrlUp)
-		shiftEnabled := (shiftHold && !shiftUp)
-		startEnabled := (startHold && !startUp)
-		stopEnabled := (stopHold && !stopUp)
-
-		// start action
-		if !*click && ctrlEnabled && shiftEnabled && startEnabled {
-			ctrlHold = false
-			shiftHold = false
-			startHold = false
-			c := true
-			click = &c
+	hook.Register(hook.KeyDown, []string{"ctrl", "shift", "t"}, func(e hook.Event) {
+		click = !click
+		if click {
 			clicks = 0
 			go b.click()
 		}
+	})
 
-		// stop action
-		if ctrlEnabled && shiftEnabled && stopEnabled {
-			ctrlHold = false
-			shiftHold = false
-			stopHold = false
-			c := false
-			click = &c
-		}
-
-		if shutdown {
-			break
-		}
-	}
+	s := hook.Start()
+	<-hook.Process(s)
 }
 
 func (b *App) Clicks() string {
@@ -145,22 +60,20 @@ func (b *App) Clicks() string {
 }
 
 func (b *App) ClicksPerSecond() string {
-	d := *delay
-	return fmt.Sprintf("%d clicks per second", (1000 / d))
+	return fmt.Sprintf("%d clicks per second", (1000 / delay))
 }
 
 func (b *App) SetDelay(d string) {
-	n, err := strconv.ParseInt(d, 10, 32)
+	n, err := strconv.ParseInt(d, 10, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
-	i := int(n)
-	delay = &i
+	delay = int(n)
 }
 
 func (b *App) click() {
 	for {
-		if !*click {
+		if !click {
 			break
 		}
 
@@ -168,6 +81,6 @@ func (b *App) click() {
 
 		clicks++
 
-		time.Sleep(time.Duration(*delay) * time.Millisecond)
+		time.Sleep(time.Duration(delay) * time.Millisecond)
 	}
 }

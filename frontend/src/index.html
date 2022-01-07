@@ -7,21 +7,21 @@
 
 <body data-wails-drag onload="listener()">
   <div class="result" id="result"></div>
-  
+
   <div class="row" id="info-label">
-    <div class="block" id="block-spacer"></div>
-    <div class="logo block" id="block-logo"></div>
-    <div class="legend block" id="block-legend">
-      <div>start: ctrl + shift + s</div>
-      <div>stop:  ctrl + shift + q</div> 
+    <div class="legend block" id="block-input">
+      <div class="input-box" id="input" data-wails-no-drag>
+        <input class="input" id="duration" type="number" autocomplete="off" placeholder="500" min="0" max="10000000">
+        <button class="btn milli-btn" onclick="setDelay()">Set Milliseconds</button>
+      </div>  
+      <small><div class="settings" id="settings"></div></small>
     </div>
   </div>
-  <div class="input-box" id="input" data-wails-no-drag>
-    <input class="input" id="duration" type="number" autocomplete="off" placeholder="500" min="0" max="10000000">
-    <button class="btn milli-btn" onclick="setDelay()">Set Milliseconds</button>
-  </div>
-  <small><div class="settings" id="settings"></div></small>
 
+  <div class="row-footer" id="footer">
+    <div class="logo block" id="block-logo"></div>
+    <div class="block info">ctrl + shift + t</div>
+  <div>
   <script src="/main.js"></script>
 </body>
 

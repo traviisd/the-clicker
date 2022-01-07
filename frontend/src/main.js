@@ -21,20 +21,9 @@ function nonBlockingIncrement(){
 // Setup the stop function
 window.listener = function() {
   nonBlockingIncrement();
-  console.log('do more stuff'); 
 };
 
 // Setup
 window.setDelay = function() {
-  // Get name
-  let duration = durationElement.value;
-  // Call App.StartClick(name)
-  window.go.main.App.SetDelay(duration);
+  window.go.main.App.SetDelay(durationElement.value);
 };
-
-nameElement.onkeydown = function(e) {
-  console.log(e)
-  if (e.keyCode == 13) {
-    window.start()
-  }
-}

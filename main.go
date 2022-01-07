@@ -25,10 +25,10 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:             "The Clicker",
-		Width:             420,
-		Height:            320,
-		MinWidth:          420,
-		MinHeight:         320,
+		Width:             300,
+		Height:            220,
+		MinWidth:          300,
+		MinHeight:         220,
 		MaxWidth:          1280,
 		MaxHeight:         740,
 		DisableResize:     true,
